@@ -127,7 +127,7 @@ id(y)==before
   **白话**把某一个方向的数全部加起来，然后把那个方向消灭掉
   sum可以求任意形状张量的元素和
 
-## Day6 线性回归的从零开始实现
+## Day6 线性回归的从零开始实现——生成数据集
 ### 概念理解：
 - **回归**：经常表示输入和输出之间的关系。
 - **线性模型**：y=kx+b，k为权重，b为截距，偏置。
@@ -149,3 +149,17 @@ id(y)==before
   3. 绘制图：关于绘图部分（matplotlib）的取舍：绘图只是为了让人类直观看到数据分布，属于辅助工具，不影响后续模型的矩阵运算逻辑。为了聚焦主线，暂时跳过绘图代码的分析，只专注 synthetic_data 核心逻辑。
   - ![alt text](image-1.png)
 
+## Day7 读取数据集
+### 踩坑记录
+- 在第一次运行代码的时候终端报错
+   ![alt text](image-2.png)
+   很明显是数据集的数据类型出了问题，所以询问了deepseek，帮我改了代码，也就是在batch_indices后限定数据类型：
+   `batch_indices = torch.tensor(indices[i: min(i + batch_size, num_examples)]).long()`
+   添加之后还是报错，于是翻找代码，我觉得是true_w和true_b那里赋值有问题，赋值成浮点数，然后把-3.4改为-3，4.1改为9，但是出现了新的报错。
+   ![alt text](image-3.png)
+   最后询问得到了答案，发现代码出现严重错误:
+   `yield features[batch_indices,labels[batch_indices]]`
+   应当改为`yield features[batch_indices], labels[batch_indices]`
+   总结下来为：
+   1.Pytorch中设计数学计算的张量必须是浮点数，所以上边的true_w和true_b赋值是正确的.
+   2.data_iter返回必须用逗号隔开x和y两个张量。=
