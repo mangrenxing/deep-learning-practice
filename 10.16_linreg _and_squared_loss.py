@@ -1,9 +1,10 @@
-import torch
-import random 
+import torch, random
+torch.manual_seed(42)
+random.seed(42)
 
 # 生成数据集
 def synthetic_data(w,b,num_examles):
-    x=torch.normal(0,1,(num_examles,len(w)))
+    x=torch.normal(0,1,(num_examles,len(w))) 
     y=torch.matmul(x,w)+b
     y+=torch.normal(0,0.01,y.shape)
     return x,y.reshape(-1,1)
@@ -33,7 +34,7 @@ def sgd(params,lr,batch_size):
             param.grad.zero_()
 
 # 1. 生成数据
-true_w = torch.tensor([2, -3.4])
+true_w = torch.tensor([2, -3.4]) 
 true_b = 4.2
 features, labels = synthetic_data(true_w, true_b, 1000)
 
