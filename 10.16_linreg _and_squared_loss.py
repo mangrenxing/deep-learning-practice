@@ -1,6 +1,5 @@
-import torch, random
-torch.manual_seed(42)
-random.seed(42)
+import torch
+import random 
 
 # 生成数据集
 def synthetic_data(w,b,num_examles):
@@ -30,11 +29,11 @@ def squared_loss(y_hat, y):
 def sgd(params,lr,batch_size):
     with torch.no_grad():
         for param in params:
-            params-=lr*param.grad/batch_size
+            param-=lr*param.grad/batch_size
             param.grad.zero_()
 
 # 1. 生成数据
-true_w = torch.tensor([2, -3.4]) 
+true_w = torch.tensor([2, -3.4])
 true_b = 4.2
 features, labels = synthetic_data(true_w, true_b, 1000)
 
@@ -48,7 +47,5 @@ for X, y in data_iter(10, features, labels):
     loss = squared_loss(y_hat, y)    # 调用损失函数
     print("当前批次的预测值 y_hat:", y_hat)
     print("当前批次的损失 loss:", loss)
+    print(loss.shape)
     break  # 只看第一批，防止刷屏
-
-
-
